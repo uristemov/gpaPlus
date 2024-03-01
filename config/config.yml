@@ -1,0 +1,31 @@
+HttpServer:
+  port: '8080'
+  timeout: '30s'
+  shutdown_timeout: '30s'
+  read_timeout: '15s'
+  write_timeout: '60s'
+
+Database:
+  host: 'localhost'
+  port: '5432'
+  db_name: 'repeatPro'
+  username: 'postgres'
+  password: "postgres"
+
+Redis:
+  host: 'localhost'
+  port: '6379'
+  expiration_time: '24h'
+
+#Token:
+#  time_to_live: "15m"
+
+Auth:
+  Access:
+#    JwtSecretKey: "AllYourBase"
+#    PasswordSecretKey: "dsadjflshfjghfdjkggfdj21321"
+    TimeToLive: '30m'
+  Refresh:
+#    JwtSecretKey: "AllYourRefreshBase"
+#    PasswordSecretKey: "dsadjflshfjghfdjkggfdj99999"
+    TimeToLive: '360h'

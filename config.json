@@ -1,0 +1,54 @@
+{
+	"database": {
+		"default": {
+			"host": "localhost",
+			"port": "5432",
+			"user": "postgres",
+			"pwd": "postgres",
+			"name": "repeatPro",
+			"driver": "postgresql",
+			"max_idle_con": 5,
+			"max_open_con": 10,
+			"conn_max_life_time": 3600000000000
+		}
+	},
+	"app_id": "Mu6yCdEA1BOp",
+	"language": "en",
+	"prefix": "admin",
+	"theme": "sword",
+	"store": {
+		"path": "./uploads",
+		"prefix": "uploads"
+	},
+	"title": "GoAdmin",
+	"logo": "GoAdmin",
+	"mini_logo": "GA",
+	"index": "/",
+	"login_url": "/login",
+	"debug": true,
+	"env": "local",
+	"info_log": "C:/Users/meiro/OneDrive/Desktop/RepeatPRO/logs/info.log",
+	"error_log": "C:/Users/meiro/OneDrive/Desktop/RepeatPRO/logs/error.log",
+	"access_log": "C:/Users/meiro/OneDrive/Desktop/RepeatPRO/logs/access.log",
+	"session_life_time": 7200,
+	"file_upload_engine": {
+		"name": "local"
+	},
+	"login_title": "GoAdmin",
+	"login_logo": "GoAdmin",
+	"auth_user_table": "goadmin_users",
+	"bootstrap_file_path": "C:/Users/meiro/OneDrive/Desktop/RepeatPRO/bootstrap.go",
+	"go_mod_file_path": "C:/Users/meiro/OneDrive/Desktop/RepeatPRO/go.mod",
+	"asset_root_path": "./public/",
+	"url_format": {
+		"info": "/info/:__prefix",
+		"detail": "/info/:__prefix/detail",
+		"create": "/new/:__prefix",
+		"delete": "/delete/:__prefix",
+		"export": "/export/:__prefix",
+		"edit": "/edit/:__prefix",
+		"show_edit": "/info/:__prefix/edit",
+		"show_create": "/info/:__prefix/new",
+		"update": "/update/:__prefix"
+	}
+}

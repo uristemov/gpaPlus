@@ -10,11 +10,15 @@ import (
 )
 
 const (
-	teacherTable = "teachers"
-	courseTable  = "courses"
-	usersTable   = "users"
-	modulesTable = "modules"
-	videosTable  = "videos"
+	//teacherTable      = "teachers"
+	courseTable       = "courses"
+	usersTable        = "users"
+	modulesTable      = "modules"
+	videosTable       = "videos"
+	textsTable        = "texts"
+	imagesTable       = "images"
+	requestsTable     = "requests"
+	usersCoursesTable = "users_courses"
 )
 
 type Postgres struct {

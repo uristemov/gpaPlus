@@ -36,13 +36,19 @@ func interfaces(arr []string) []interface{} {
 
 func (g *GoAdmin) GetCoursesTable(ctx *context.Context) table.Table {
 
-	courses := table.NewDefaultTable(table.DefaultConfigWithDriver("postgresql"))
+	cfg := table.DefaultConfigWithDriver("postgresql")
+	cfg.PrimaryKey.Type = db.UUID
+
+	courses := table.NewDefaultTable(cfg)
 
 	info := courses.GetInfo().HideFilterArea()
 	info.AddField("ID", "id", db.Int)
 	info.AddField("Name", "name", db.Varchar)
 	info.AddField("Description", "description", db.Text)
 	info.AddField("Image_path", "image_path", db.Text)
+	info.AddField("Price", "price", db.Int)
+	info.AddField("Rating", "rating", db.Float4)
+	info.AddField("AuthorID", "user_id", db.UUID)
 	info.AddField("Created_at", "created_at", db.Datetime).FieldFilterable().FieldSortable()
 
 	info.SetTable("courses").SetTitle("Courses").SetDescription("Courses").

@@ -7,10 +7,10 @@ import (
 	"github.com/uristemov/repeatPro/internal/entity"
 )
 
-func (p *Postgres) GetAllTeachers(ctx context.Context) ([]entity.Teacher, error) {
-	var teachers []entity.Teacher
+func (p *Postgres) GetAllTeachers(ctx context.Context) ([]entity.User, error) {
+	var users []entity.User
 
-	query := fmt.Sprintf("SELECT id, name, image_path, description, phone, created_at FROM %s", teacherTable)
+	query := fmt.Sprintf("SELECT id, first_name, last_name, image_path, phone, created_at FROM %s WHERE role_id=3", usersTable)
 
 	rows, err := p.Pool.Query(ctx, query)
 	if err != nil {
@@ -19,9 +19,9 @@ func (p *Postgres) GetAllTeachers(ctx context.Context) ([]entity.Teacher, error)
 	defer rows.Close()
 
 	for rows.Next() {
-		teacher := entity.Teacher{}
-		err = rows.Scan(&teacher.Id, &teacher.Name, &teacher.ImagePath, &teacher.Description, &teacher.Phone, &teacher.CreatedAt)
-		teachers = append(teachers, teacher)
+		user := entity.User{}
+		err = rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.ImagePath, &user.Phone, &user.CreatedAt)
+		users = append(users, user)
 		if err != nil {
 			return nil, err
 		}
@@ -32,13 +32,13 @@ func (p *Postgres) GetAllTeachers(ctx context.Context) ([]entity.Teacher, error)
 		return nil, err
 	}
 
-	return teachers, nil
+	return users, nil
 }
 
-func (p *Postgres) GetTeacherById(ctx context.Context, id string) (*entity.Teacher, error) {
-	teacher := new(entity.Teacher)
+func (p *Postgres) GetTeacherById(ctx context.Context, id string) (*entity.User, error) {
+	teacher := new(entity.User)
 
-	query := fmt.Sprintf("SELECT id, name, image_path, description, phone, created_at FROM %s WHERE id=$1", teacherTable)
+	query := fmt.Sprintf("SELECT id, first_name, last_name, image_path, phone, created_at FROM %s WHERE role_id=3 AND id=$1", usersTable)
 
 	err := pgxscan.Get(ctx, p.Pool, teacher, query, id)
 	if err != nil {

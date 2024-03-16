@@ -9,6 +9,30 @@ import (
 	"strings"
 )
 
+func (p *Postgres) CreateModule(ctx context.Context, req *api.CreateModuleRequest) (string, error) {
+	tx, err := p.Pool.Begin(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	var moduleId string
+	query := fmt.Sprintf(`
+			INSERT INTO %s (
+							course_id,
+							name
+			                )
+			VALUES ($1, $2) RETURNING id
+			`, modulesTable)
+
+	err = p.Pool.QueryRow(ctx, query, req.CourseId, req.Name).Scan(&moduleId)
+	if err != nil {
+		tx.Rollback(ctx)
+		return "", err
+	}
+
+	return moduleId, tx.Commit(ctx)
+}
+
 func (p *Postgres) GetAllCourseModules(ctx context.Context, courseId string) ([]entity.Module, error) {
 	var modules []entity.Module
 
@@ -85,4 +109,41 @@ func (p *Postgres) UpdateModuleById(ctx context.Context, req *api.UpdateModuleRe
 
 	return nil
 
+}
+
+func (p *Postgres) GetAllModuleSteps(ctx context.Context, id string) ([]api.GetStepsResponse, error) {
+	var steps []api.GetStepsResponse
+
+	query := fmt.Sprintf(
+		"SELECT id, name, '/videos/' AS url FROM videos WHERE module_id=$1 " +
+			"UNION ALL " +
+			"SELECT id, name, '/texts/' AS url FROM texts WHERE module_id=$1 " +
+			"UNION ALL " +
+			"SELECT id, name, '/images/' AS url FROM images WHERE module_id=$1",
+	)
+
+	rows, err := p.Pool.Query(ctx, query, id)
+	fmt.Println("Error: ", err)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("Course steps: ", steps)
+	defer rows.Close()
+
+	for rows.Next() {
+		step := api.GetStepsResponse{}
+		err = rows.Scan(&step.Id, &step.Name, &step.Url)
+		steps = append(steps, step)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+
+	return steps, nil
 }

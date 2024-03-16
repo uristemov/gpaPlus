@@ -6,6 +6,10 @@ import (
 	"github.com/uristemov/repeatPro/internal/entity"
 )
 
+func (m *Manager) CreateVideo(ctx context.Context, req *api.CreateVideoRequest) (string, error) {
+	return m.Repository.CreateVideo(ctx, req)
+}
+
 func (m *Manager) GetAllVideos(ctx context.Context) ([]entity.Video, error) {
 	return m.Repository.GetAllVideos(ctx)
 }

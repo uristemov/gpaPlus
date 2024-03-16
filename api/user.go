@@ -22,3 +22,13 @@ type UpgradeUserRequest struct {
 	RoleId       int64  `json:"role_id"  db:"role_id"`
 	Verified     bool   `json:"verified"  db:"verified"`
 }
+
+type GetStudentsResponse struct {
+	Id        string `json:"id"  db:"id"`
+	FirstName string `json:"firstname" db:"firstname"`
+	LastName  string `json:"lastname" db:"lastname"`
+	ImagePath string `json:"image_path" db:"image_path"`
+	Role      string `json:"role"`
+	Email     string `json:"email" db:"email"`
+	Verified  bool   `json:"verified"  db:"verified"`
+}

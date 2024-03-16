@@ -54,3 +54,22 @@ func getUserId(c *gin.Context) (string, error) {
 
 	return id, nil
 }
+
+func (h *Handler) isTeacher() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
+		userId, err := getUserId(ctx)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, api.Error{Message: err.Error()})
+			return
+		}
+
+		_, err = h.service.GetTeacherById(ctx, userId)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusForbidden, api.Error{Message: "To get on this panel, you need to become a teacher."})
+			return
+		}
+
+		ctx.Next()
+	}
+}

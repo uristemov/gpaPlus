@@ -9,6 +9,7 @@ import (
 	"github.com/uristemov/repeatPro/internal/repository"
 	"github.com/uristemov/repeatPro/internal/service"
 	redisCache "github.com/uristemov/repeatPro/pkg/cache"
+	"github.com/uristemov/repeatPro/pkg/front"
 	"github.com/uristemov/repeatPro/pkg/go_admin"
 	"github.com/uristemov/repeatPro/pkg/go_admin/tables"
 	"github.com/uristemov/repeatPro/pkg/httpserver"
@@ -55,6 +56,8 @@ func Run(logger *zap.SugaredLogger, cfg *config.Config) {
 	handler := http.New(service, logger)
 
 	router := handler.InitRouter()
+
+	router = front.InitFront(router)
 
 	goAdmin := tables.New(service)
 

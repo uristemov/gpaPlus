@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/uristemov/repeatPro/api"
 	"github.com/uristemov/repeatPro/internal/controller/dto"
@@ -12,7 +13,7 @@ func (h *Handler) createUser(ctx *gin.Context) {
 	var req entity.User
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, api.Error{"invalid input body"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, api.Error{Message: fmt.Sprintf("invalid input body err: %s", err.Error())})
 		return
 	}
 
@@ -29,7 +30,7 @@ func (h *Handler) loginUser(ctx *gin.Context) {
 	var req api.LoginRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, api.Error{Message: "invalid input body"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, api.Error{Message: fmt.Sprintf("invalid input body err: %s", err.Error())})
 		return
 	}
 
@@ -111,7 +112,7 @@ func (h *Handler) refresh(ctx *gin.Context) {
 	var oldRefreshToken dto.RefreshInput
 
 	if err := ctx.BindJSON(&oldRefreshToken); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, api.Error{Message: "invalid input body"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, api.Error{Message: fmt.Sprintf("invalid input body err: %s", err.Error())})
 		return
 	}
 

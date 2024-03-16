@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func (p *Postgres) CreateVideo(ctx context.Context, req *api.CreateVideoRequest) (string, error) {
+func (p *Postgres) CreateImage(ctx context.Context, req *api.CreateImageRequest) (string, error) {
 	tx, err := p.Pool.Begin(ctx)
 	if err != nil {
 		return "", err
@@ -18,15 +18,15 @@ func (p *Postgres) CreateVideo(ctx context.Context, req *api.CreateVideoRequest)
 	var videoId string
 	query := fmt.Sprintf(`
 			INSERT INTO %s (
-							video_path,
+							image_path,
 							name,
 							description,
 							module_id
 			                )
 			VALUES ($1, $2, $3, $4) RETURNING id
-			`, videosTable)
+			`, imagesTable)
 
-	err = p.Pool.QueryRow(ctx, query, req.VideoPath, req.Name, req.Description, req.ModuleId).Scan(&videoId)
+	err = p.Pool.QueryRow(ctx, query, req.ImagePath, req.Name, req.Description, req.ModuleId).Scan(&videoId)
 	if err != nil {
 		tx.Rollback(ctx)
 		return "", err
@@ -35,10 +35,10 @@ func (p *Postgres) CreateVideo(ctx context.Context, req *api.CreateVideoRequest)
 	return videoId, tx.Commit(ctx)
 }
 
-func (p *Postgres) GetAllVideos(ctx context.Context) ([]entity.Video, error) {
-	var videos []entity.Video
+func (p *Postgres) GetAllImages(ctx context.Context) ([]entity.Image, error) {
+	var images []entity.Image
 
-	query := fmt.Sprintf("SELECT id, name, video_path, description, module_id, created_at FROM %s", videosTable)
+	query := fmt.Sprintf("SELECT id, name, image_path, description, module_id, created_at FROM %s", imagesTable)
 
 	rows, err := p.Pool.Query(ctx, query)
 	if err != nil {
@@ -47,9 +47,9 @@ func (p *Postgres) GetAllVideos(ctx context.Context) ([]entity.Video, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		video := entity.Video{}
-		err = rows.Scan(&video.Id, &video.Name, &video.VideoPath, &video.Description, &video.ModuleId, &video.CreatedAt)
-		videos = append(videos, video)
+		image := entity.Image{}
+		err = rows.Scan(&image.Id, &image.Name, &image.ImagePath, &image.Description, &image.ModuleId, &image.CreatedAt)
+		images = append(images, image)
 		if err != nil {
 			return nil, err
 		}
@@ -60,13 +60,13 @@ func (p *Postgres) GetAllVideos(ctx context.Context) ([]entity.Video, error) {
 		return nil, err
 	}
 
-	return videos, nil
+	return images, nil
 }
 
-func (p *Postgres) GetVideoById(ctx context.Context, id string) (*entity.Video, error) {
-	video := new(entity.Video)
+func (p *Postgres) GetImageById(ctx context.Context, id string) (*entity.Image, error) {
+	video := new(entity.Image)
 
-	query := fmt.Sprintf("SELECT id, name, video_path, description, module_id, created_at FROM %s WHERE id=$1", videosTable)
+	query := fmt.Sprintf("SELECT id, name, image_path, description, module_id, created_at FROM %s WHERE id=$1", imagesTable)
 
 	err := pgxscan.Get(ctx, p.Pool, video, query, id)
 	if err != nil {
@@ -76,8 +76,8 @@ func (p *Postgres) GetVideoById(ctx context.Context, id string) (*entity.Video, 
 	return video, nil
 }
 
-func (p *Postgres) DeleteVideoById(ctx context.Context, id string) error {
-	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", videosTable)
+func (p *Postgres) DeleteImageById(ctx context.Context, id string) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", imagesTable)
 
 	_, err := p.Pool.Exec(ctx, query, id)
 	if err != nil {
@@ -87,15 +87,15 @@ func (p *Postgres) DeleteVideoById(ctx context.Context, id string) error {
 	return nil
 }
 
-func (p *Postgres) UpdateVideoById(ctx context.Context, req *api.UpdateVideoRequest, id string) error {
+func (p *Postgres) UpdateImageById(ctx context.Context, req *api.UpdateImageRequest, id string) error {
 
 	values := make([]string, 0)
 	paramCount := 2
 	params := make([]interface{}, 0)
 
-	if req.VideoPath != "" {
-		values = append(values, fmt.Sprintf("video_path=$%d", paramCount))
-		params = append(params, req.VideoPath)
+	if req.ImagePath != "" {
+		values = append(values, fmt.Sprintf("image_path=$%d", paramCount))
+		params = append(params, req.ImagePath)
 		paramCount++
 	}
 	//if req.LogoImage != "" {
@@ -114,7 +114,7 @@ func (p *Postgres) UpdateVideoById(ctx context.Context, req *api.UpdateVideoRequ
 	}
 
 	setQuery := strings.Join(values, ", ")
-	setQuery = fmt.Sprintf("UPDATE %s SET ", videosTable) + setQuery + " WHERE id=$1"
+	setQuery = fmt.Sprintf("UPDATE %s SET ", imagesTable) + setQuery + " WHERE id=$1"
 
 	params = append([]interface{}{id}, params...)
 
